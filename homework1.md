@@ -24,7 +24,7 @@
    $$
 
 6. $$
-   置迭代器号k = k + 1，goto \ step \ 2
+   remap \ \ k = k + 1，goto \ step \ 2
    $$
 
 7. $$
@@ -144,12 +144,13 @@ double func(std::vector<double> &p_x, const std::vector<std::vector<double>> &p_
         double sum = 0.0;
         for (int j = 0; j < s; j++)
         {
+            // according further math's theory
             // if x -> 0 then xlnx -> 0
-            // but here what computer provide is NaN
+            // but here what computer calculate is NaN because ln(0) can't be presented
             // so we need take some measures such as followd
             if (p_yx[i][j] != 0)
             {
-                sum += p_yx[i][j] * std::log(p_xy[i][j]);
+                sum += p_yx[i][j] * std::log(p_xy[i][j]); // log is considered as ln in the cmath library of cpp
             }
         }
         exp_sum[i] = std::exp(sum);
