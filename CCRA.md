@@ -46,7 +46,7 @@
 #include <cmath>
 #include <numeric>
 
-const double delta = 1e-10; // 信道容量相对误差门限
+const double DELTA = 1e-10; // 信道容量相对误差门限
 
 /**
  *  @brief  迭代计算最佳信源分布、信道容量
@@ -96,7 +96,7 @@ int main()
         new_c = func(p_x, p_yx);         // 接收迭代结果
         std::swap(c, new_c);             // 保存迭代结果，以备下次比较
         new_c = std::abs(c - new_c) / c; // 计算相对变化值
-    } while (new_c > delta);
+    } while (new_c > DELTA);
     // <--------------------------------5 : compare-------------------------------->
 
     // <--------------------------------7 : output-------------------------------->
