@@ -25,6 +25,12 @@ void codingFile(const char *filename_in, const char *filename_out)
 {
     // Unordered map to store the encoding
     std::unordered_map<std::string, unsigned short> ump;
+    for (int c = 0; c < 256; c++)
+    {
+        std::string str(1, static_cast<unsigned char>(c)); // Convert the unsigned char to a string
+        ump[str] = static_cast<unsigned short>(c);
+    }
+    std::cout << "ump size: " << ump.size() << std::endl;
 
     // File streams for input and output
     std::ifstream inputFile;
@@ -97,8 +103,9 @@ int main(int argc, char *argv[])
         // If no arguments are provided, read the filenames from the standard input
         if (argc == 1)
         {
-            std::string filename_in = "";
-            std::string filename_out = "";
+            // std::string filename_in = "a.txt";
+            // std::string filename_out = "b.txt";
+            std::string filename_in, filename_out;
             std::cin >> filename_in >> filename_out;
             codingFile(filename_in.c_str(), filename_out.c_str());
         }
