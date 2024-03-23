@@ -21,7 +21,7 @@ const char HEX[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B'
  * @param filename_out The name of the output file.
  * @throws std::string If an error occurs while opening the files.
  */
-void codingFile(const char *filename_in, const char *filename_out)
+void encodeFile(const char *filename_in, const char *filename_out)
 {
     // Unordered map to store the encoding
     std::unordered_map<std::string, unsigned short> ump;
@@ -30,7 +30,7 @@ void codingFile(const char *filename_in, const char *filename_out)
         std::string str(1, static_cast<unsigned char>(c)); // Convert the unsigned char to a string
         ump[str] = static_cast<unsigned short>(c);
     }
-    std::cout << "ump size: " << ump.size() << std::endl;
+    // std::cout << "ump size: " << ump.size() << std::endl;
 
     // File streams for input and output
     std::ifstream inputFile;
@@ -71,16 +71,11 @@ void codingFile(const char *filename_in, const char *filename_out)
         std::string temp = key;
         key += current_char;
 
-        // If the key is found in the map, continue to the next iteration
-        if (key.size() == 1 || ump.find(key) != ump.end())
-            continue;
-
         // If the key is not found in the map, add it
-        else if (ump.find(key) == ump.end())
+        if (ump.find(key) == ump.end())
         {
-            unsigned short temp_value = temp.size() == 1 ? (unsigned short)temp[0] : ump[temp];
-            if (key.size() != 1)
-                ump[key] = ++value;
+            unsigned short temp_value = ump[temp];
+            ump[key] = ++value;
 
             // Write the encoded value to the output file
             outputFile << HEX[(temp_value >> 8) & 0xF] << HEX[(temp_value >> 4) & 0xF] << HEX[(temp_value) & 0xF] << std::flush;
@@ -107,14 +102,14 @@ int main(int argc, char *argv[])
             // std::string filename_out = "b.txt";
             std::string filename_in, filename_out;
             std::cin >> filename_in >> filename_out;
-            codingFile(filename_in.c_str(), filename_out.c_str());
+            encodeFile(filename_in.c_str(), filename_out.c_str());
         }
         // If two arguments are provided, use them as the filenames
         else if (argc == 3)
         {
             std::cout << "source file: " << argv[1] << std::endl;
             std::cout << "destination file: " << argv[2] << std::endl;
-            codingFile(argv[1], argv[2]);
+            encodeFile(argv[1], argv[2]);
         }
         // If the wrong number of arguments are provided, print a usage message
         else
