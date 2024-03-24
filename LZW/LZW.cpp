@@ -20,7 +20,7 @@ const char HEX[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B'
  * @param filename_out The name of the output file where the encoded data will be written.
  * @throws std::runtime_error If the input file or the output file cannot be opened.
  */
-void encodeFile(const std::string &filename_in, const std::string &filename_out)
+void myEncode(const std::string &filename_in, const std::string &filename_out)
 {
     // Create a map to store the encoding
     std::unordered_map<std::string, unsigned short> ump;
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
             std::cin >> filename_in >> filename_out;
 
             // Encode the input file
-            encodeFile(filename_in, filename_out);
+            myEncode(filename_in, filename_out);
         }
         // If there are three arguments, use the second and third arguments as the input and output file names
         else if (argc == 3)
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
             std::cout << "destination file: " << argv[2] << std::endl;
 
             // Encode the input file
-            encodeFile(argv[1], argv[2]);
+            myEncode(argv[1], argv[2]);
         }
         // If the number of arguments is not one or three, print the usage of the program and return
         else
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
         }
 
         // Print a success message after the encoding is done
-        std::cout << "coding successful." << std::endl;
+        std::cout << "File encoded successfully!" << std::endl;
     }
     // Catch any exceptions and print the error message
     catch (const std::runtime_error &e)
