@@ -7,10 +7,10 @@
 const double DELTA = 1e-10; // 信道容量相对误差门限
 
 /**
- *  @brief  迭代计算最佳信源分布、信道容量
+ *  @brief  迭代计算最佳信源分布，旧的信道容量
  *  @param  p_x  信源分布
  *  @param  p_yx  信道转移概率矩阵
- *  @return  信道容量
+ *  @return  新的信道容量
  */
 double func(std::vector<double> &, const std::vector<std::vector<double>> &);
 

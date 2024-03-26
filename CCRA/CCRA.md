@@ -1,5 +1,3 @@
-
-
 # Procedures
 
 1. $$
@@ -49,10 +47,10 @@
 const double DELTA = 1e-10; // 信道容量相对误差门限
 
 /**
- *  @brief  迭代计算最佳信源分布、信道容量
+ *  @brief  迭代计算最佳信源分布，旧的信道容量
  *  @param  p_x  信源分布
  *  @param  p_yx  信道转移概率矩阵
- *  @return  信道容量
+ *  @return  新的信道容量
  */
 double func(std::vector<double> &, const std::vector<std::vector<double>> &);
 
@@ -173,21 +171,24 @@ import numpy as np
 DELTA = 1e-10
 
 def main():
+    """
+    主函数，用于接收用户输入并计算信道容量
+    """
     print('依次输入信源、新宿符号个数（回车隔开）')
-    r = int(input())
-    s = int(input())
-    p_x = np.full(r, 1.0 / r, dtype=float)
-    p_yx = np.zeros((r, s), dtype=float)
+    r = int(input())  # 信源符号个数
+    s = int(input())  # 新宿符号个数
+    p_x = np.full(r, 1.0 / r, dtype=float)  # 初始化信源分布
+    p_yx = np.zeros((r, s), dtype=float)  # 初始化信道转移概率矩阵
     print('依次信道转移概率矩阵元素（从左到右、自上而下，回车隔开）')
     for i in range(len(p_yx)):
         for j in range(len(p_yx[0])):
-            p_yx[i][j] = float(input())
+            p_yx[i][j] = float(input())  # 输入信道转移概率矩阵元素
 
-    c = -np.inf
-    new_c = func(p_x, p_yx)
+    c = -np.inf  # 初始化信道容量
+    new_c = func(p_x, p_yx)  # 计算新的信道容量
     c, new_c = new_c, c
     new_c = np.abs(c - new_c) / c
-    while (new_c > DELTA):
+    while (new_c > DELTA):  # 当新旧信道容量之差大于阈值时，继续迭代
         new_c = func(p_x, p_yx)
         c, new_c = new_c, c
         new_c = np.abs(c - new_c) / c
@@ -203,36 +204,155 @@ def main():
     print('(bit per charactor)')
 
 def func(p_x, p_yx):
-    r = len(p_yx)
-    s = len(p_yx[0])
-    mult = np.zeros(s, dtype=float)
+    """
+    计算新的信道容量和信源分布
+
+    参数:
+    p_x -- 信源分布
+    p_yx -- 信道转移概率矩阵
+
+    返回:
+    new_c -- 新的信道容量
+    """
+    r = len(p_yx)  # 信源符号个数
+    s = len(p_yx[0])  # 新宿符号个数
+    mult = np.zeros(s, dtype=float)  # 初始化乘积数组
     for j in range(s):
         mult_sum = 0.0
         for i in range(r):
-            mult_sum += p_yx[i][j] * p_x[i]
+            mult_sum += p_yx[i][j] * p_x[i]  # 计算乘积
         mult[j] = mult_sum
     
-    p_xy = np.zeros((r, s), dtype=float)
+    p_xy = np.zeros((r, s), dtype=float)  # 初始化联合概率矩阵
     for i in range(r):
         for j in range(s):
-            p_xy[i][j] = p_yx[i][j] * p_x[i] / mult[j]
+            p_xy[i][j] = p_yx[i][j] * p_x[i] / mult[j]  # 计算联合概率
     
-    exp_sum = np.zeros(r, dtype=float)
+    exp_sum = np.zeros(r, dtype=float)  # 初始化指数和数组
     for i in range(r):
         sum = 0.0
         for j in range(s):
             if (p_yx[i][j] != 0):
-                sum += p_yx[i][j] * np.log(p_xy[i][j])
+                sum += p_yx[i][j] * np.log(p_xy[i][j])  # 计算指数和
         exp_sum[i] = np.exp(sum)
     sum_mult_sum = np.sum(exp_sum)
 
     for i in range(r):
-        p_x[i] = exp_sum[i] / sum_mult_sum
+        p_x[i] = exp_sum[i] / sum_mult_sum  # 更新信源分布
     
-    new_c = np.log(sum_mult_sum)
+    new_c = np.log(sum_mult_sum)  # 计算新的信道容量
     return new_c
 
 if __name__ == '__main__':
     main()
+```
+
+# HTML source code
+
+```html
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        const DELTA = 1e-10;
+
+        function main() {
+            // console.log('Enter source, transition, and destination probabilities separated by spaces');
+            const r = parseInt(prompt('行数'));
+            const s = parseInt(prompt('列数'));
+            // const r = 2;
+            // const s = 3;
+            const p_x = new Array(r);
+            for (let i = 0; i < p_x.length; i++) {
+                p_x[i] = 1 / r;
+            }
+
+            const p_yx = new Array(r);
+            for (let i = 0; i < r; i++) {
+                p_yx[i] = new Array(s);
+                for (let j = 0; j < s; j++) {
+                    p_yx[i][j] = parseFloat(prompt());
+                }
+            }
+            // const p_yx = [[0.5, 0.3, 0.2], [0.3, 0.5, 0.2]];
+
+            let new_c = 0.0;
+            let c = -Infinity;
+            do {
+                new_c = func(p_x, p_yx);
+                [c, new_c] = [new_c, c];
+                new_c = Math.abs(c - new_c) / c;
+            } while (new_c > DELTA);
+
+            // console.log('Optimal source probabilities');
+            document.write('Optimal source probabilities');
+            document.write('</br>');
+            for (let e of p_x) {
+                document.write(`<strong>${e}</strong>&nbsp;&nbsp;`);
+                // document.write('</br>');
+            }
+            document.write('</br>');
+            document.write('Capacity');
+            document.write('</br>');
+            document.write(`<strong>${c}</strong>`);
+            document.write('&nbsp;(bits per character)');
+        }
+
+        function func(p_x, p_yx) {
+            const r = p_yx.length;
+            const s = p_yx[0].length;
+            const mult = new Array(s);
+            for (let j = 0; j < s; j++) {
+                let mult_sum = 0;
+                for (let i = 0; i < r; i++) {
+                    mult_sum += p_yx[i][j] * p_x[i];
+                }
+                mult[j] = mult_sum;
+            }
+
+            const p_xy = new Array(r);
+            for (let i = 0; i < r; i++) {
+                p_xy[i] = new Array(s);
+                for (let j = 0; j < s; j++) {
+                    p_xy[i][j] = p_yx[i][j] * p_x[i] / mult[j];
+                }
+            }
+
+            const exp_sum = new Array(s);
+            for (let i = 0; i < r; i++) {
+                let sum = 0;
+                for (let j = 0; j < s; j++) {
+                    if (p_yx[i][j] !== 0) {
+                        sum += p_yx[i][j] * Math.log(p_xy[i][j]);
+                    }
+                }
+                exp_sum[i] = Math.exp(sum);
+            }
+            const sum_mult_sum = exp_sum.reduce(function (total, value) {
+                return total + value;
+            }, 0);
+
+            for (let i = 0; i < r; i++) {
+                p_x[i] = exp_sum[i] / sum_mult_sum;
+            }
+
+            const new_c = Math.log(sum_mult_sum);
+            return new_c;
+        }
+
+        main();
+
+    </script>
+</body>
+
+</html>
 ```
 
